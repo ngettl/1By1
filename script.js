@@ -248,9 +248,9 @@ submitMod.addEventListener("click", function () {
     var infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
     infoModal.hide();  // Hide the modal after submitting
 
-    // Transition to next screen, if needed
-    document.getElementById("loginScreen").style.display = "none"; // Hide the login screen
-    document.getElementById("mainApp").style.display = "block"; // Show the main application screen
+    // Remove the login screen transition since it doesn't exist
+    // document.getElementById("loginScreen").style.display = "none";
+    // document.getElementById("mainApp").style.display = "block";
 });
 
 // Handle window close event
@@ -294,6 +294,9 @@ closeWindowB.addEventListener("click", function () {
     .then(response => {
         console.log('Response status:', response.status);
         console.log('Response headers:', response.headers);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         return response.text();
     })
     .then(text => {
