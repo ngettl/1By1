@@ -24,6 +24,7 @@ let players = [];
 let currentNum = 0;
 let images = [];
 let currentPair = [0, 1]; // Track current pair of images
+let allImagePairs = []; // Track all image pairs shown
 
 const BASE_URL = "https://bmicardratings.netlify.app/front_cards";
 
@@ -235,6 +236,11 @@ function updateImages() {
     // Calculate the next pair of images to show
     currentPair = [currentNum * 2, currentNum * 2 + 1];
     
+    // Store the current image pair
+    if (currentNum < 15) { // Only store pairs for actual comparisons
+        allImagePairs[currentNum] = [images[currentPair[0]], images[currentPair[1]]];
+    }
+    
     // Ensure there are images in the array and currentNum is within bounds
     if (images.length > 0 && currentPair[0] < images.length && currentPair[1] < images.length) {
         playerImage1.src = BASE_URL + "/" + images[currentPair[0]];
@@ -267,7 +273,7 @@ closeWindowB.addEventListener("click", function () {
         date: dateG,
         time: timeG,
         ratings: ratings.join(','),
-        imagePairs: currentPair.map(i => images[i]).join(',')
+        imagePairs: allImagePairs.map(pair => pair.join('|')).join(',')
     };
 
     // Show loading state
