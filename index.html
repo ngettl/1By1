@@ -24,15 +24,17 @@
             padding: 2rem 1rem;
         }
 
-        #PlayerImage {
-            width: auto;
-            height: 400px;
+        #PlayerImage1, #PlayerImage2 {
+            max-width: 100%;
+            height: auto;
+            max-height: 300px;
             border-radius: 15px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
+            object-fit: contain;
         }
 
-        #PlayerImage:hover {
+        #PlayerImage1:hover, #PlayerImage2:hover {
             transform: scale(1.02);
         }
 
