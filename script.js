@@ -270,20 +270,49 @@ closeWindowB.addEventListener("click", function () {
         imagePairs: currentPair.map(i => images[i]).join(',')
     };
 
+    // Show loading state
+    closeWindowB.disabled = true;
+    closeWindowB.textContent = "Submitting...";
+
     // Send data to Google Sheets
-    fetch('https://script.google.com/macros/s/AKfycbwI_cAs6o8eKJ5RKJ_daUUQX0O-gnLwz2yO3pzotEM50Iq0DTPJc0oi6zisy1ceJm-sBA/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbySbQmLYBVDeuQwG8t45yxiwUECpEh4jExn-S10cKOLUqYZtHlwSyNl3fn7ZnaC_OSPcA/exec', {
         method: 'POST',
+        mode: 'no-cors',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify(data)
+        body: new URLSearchParams({
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            date: data.date,
+            time: data.time,
+            ratings: data.ratings,
+            imagePairs: data.imagePairs
+        })
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-        window.close();
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
+    .then(text => {
+        try {
+            const data = JSON.parse(text);
+            console.log('Success:', data);
+            alert('Thank you! Your responses have been recorded.');
+            window.close();
+        } catch (e) {
+            console.log('Response text:', text);
+            alert('Thank you! Your responses have been recorded.');
+            window.close();
+        }
     })
     .catch((error) => {
         console.error('Error:', error);
+        alert('There was an error submitting your responses. Please try again or contact the administrator.');
+        closeWindowB.disabled = false;
+        closeWindowB.textContent = "Submit Results";
     });
 });
