@@ -128,27 +128,40 @@
 </head>
 <body>
     <header class="text-center">
-        <h1 class="display-4 fw-bold mb-3">MLB BMI Prediction Survey</h1>
-        <p class="lead mb-2">Select the category that best fits the player</p>
+        <h1 class="display-4 fw-bold mb-3">MLB Card Comparison Survey</h1>
+        <p class="lead mb-2">Select which card looks heavier</p>
         <p class="h6 text-white-50">The survey works best if taken on a mobile device</p>
     </header>
     
     <div class="container">
-        <div class="card bg-dark border-0 shadow-lg mb-4">
-            <div class="card-body p-4">
-                <img class="d-block mx-auto rounded" id="PlayerImage" 
-                     src="https://th.bing.com/th/id/OIG2.9O4YqGf98tiYzjKDvg7L" 
-                     alt="Player Image">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card bg-dark border-0 shadow-lg">
+                    <div class="card-body p-4">
+                        <img class="d-block mx-auto rounded" id="PlayerImage1" 
+                             src="https://th.bing.com/th/id/OIG2.9O4YqGf98tiYzjKDvg7L" 
+                             alt="Player Image 1">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-dark border-0 shadow-lg">
+                    <div class="card-body p-4">
+                        <img class="d-block mx-auto rounded" id="PlayerImage2" 
+                             src="https://th.bing.com/th/id/OIG2.9O4YqGf98tiYzjKDvg7L" 
+                             alt="Player Image 2">
+                    </div>
+                </div>
             </div>
         </div>
     
         <div class="d-flex flex-column align-items-center w-100 mb-4">
             <div class="btn-group-vertical w-75">
-                <button type="button" id="5" class="btn btn-primary">5 - Overweight</button>
-                <button type="button" id="4" class="btn btn-primary">4 - Above Average</button>
-                <button type="button" id="3" class="btn btn-primary">3 - Average</button>
-                <button type="button" id="2" class="btn btn-primary">2 - Below Average</button>
-                <button type="button" id="1" class="btn btn-primary">1 - Underweight</button>
+                <button type="button" id="leftMuch" class="btn btn-primary">Left Player Looks Much Heavier</button>
+                <button type="button" id="leftLittle" class="btn btn-primary">Left Player Looks Slightly Heavier</button>
+                <button type="button" id="equal" class="btn btn-primary">About the Same</button>
+                <button type="button" id="rightLittle" class="btn btn-primary">Right Player Looks Slightly Heavier</button>
+                <button type="button" id="rightMuch" class="btn btn-primary">Right Player Looks Much Heavier</button>
             </div>
         </div>
         

@@ -1,4 +1,3 @@
-
 let nextButton = document.getElementById("nextButton");
 let prevButton = document.getElementById("prevButton");
 let progressBar = document.getElementById("progressBar");
@@ -12,18 +11,19 @@ let currentRating = document.getElementById("currentRating");
 let info = document.getElementById("info");
 let closeWindowB = document.getElementById("closeWindowB");
 
-let r5 = document.getElementById("5");
-let r4 = document.getElementById("4");
-let r3 = document.getElementById("3");
-let r2 = document.getElementById("2");
-let r1 = document.getElementById("1");
+let leftMuchButton = document.getElementById("leftMuch");
+let leftLittleButton = document.getElementById("leftLittle");
+let equalButton = document.getElementById("equal");
+let rightLittleButton = document.getElementById("rightLittle");
+let rightMuchButton = document.getElementById("rightMuch");
 
 let modBArr = [false, false, false];
-let ratings = [];3
+let ratings = [];
 let players = [];
 
 let currentNum = 0;
 let images = [];
+let currentPair = [0, 1]; // Track current pair of images
 
 const BASE_URL = "https://bmicardratings.netlify.app/front_cards";
 
@@ -39,12 +39,12 @@ function checkFormCompletion() {
 }
 
 function checkFullFormCompletion(){
-    if(ratings.length == 30){
-        r1.disabled = true;
-        r2.disabled = true;
-        r3.disabled = true;
-        r4.disabled = true;
-        r5.disabled = true;
+    if(ratings.length == 15){ // 15 comparisons
+        leftMuchButton.disabled = true;
+        leftLittleButton.disabled = true;
+        equalButton.disabled = true;
+        rightLittleButton.disabled = true;
+        rightMuchButton.disabled = true;
         prevButton.disabled = true;
         nextButton.disabled = true;
         info.disabled = true;
@@ -69,51 +69,55 @@ email.addEventListener("input", function () {
     checkFormCompletion();
 });
 
-// Event listeners for rating buttons
-r5.addEventListener("click", function(){
-    ratings[currentNum] = 5;
+// Event listeners for comparison buttons
+leftMuchButton.addEventListener("click", function(){
+    ratings[currentNum] = "left_much";
     currentNum++;
     updateButtons();
     updateCounter();
     updatePrevRating();
     checkFullFormCompletion();
-    updateImage();
+    updateImages();
 });
-r4.addEventListener("click", function(){
-    ratings[currentNum] = 4;
+
+leftLittleButton.addEventListener("click", function(){
+    ratings[currentNum] = "left_little";
     currentNum++;
     updateButtons();
     updateCounter();
     updatePrevRating();
     checkFullFormCompletion();
-    updateImage();
+    updateImages();
 });
-r3.addEventListener("click", function(){
-    ratings[currentNum] = 3;
+
+equalButton.addEventListener("click", function(){
+    ratings[currentNum] = "equal";
     currentNum++;
     updateButtons();
     updateCounter();
     updatePrevRating();
     checkFullFormCompletion();
-    updateImage();
+    updateImages();
 });
-r2.addEventListener("click", function(){
-    ratings[currentNum] = 2;
+
+rightLittleButton.addEventListener("click", function(){
+    ratings[currentNum] = "right_little";
     currentNum++;
     updateButtons();
     updateCounter();
     updatePrevRating();
     checkFullFormCompletion();
-    updateImage();
+    updateImages();
 });
-r1.addEventListener("click", function(){
-    ratings[currentNum] = 1;
+
+rightMuchButton.addEventListener("click", function(){
+    ratings[currentNum] = "right_much";
     currentNum++;
     updateButtons();
     updateCounter();
     updatePrevRating();
     checkFullFormCompletion();
-    updateImage();
+    updateImages();
 });
 
 prevButton.addEventListener("click", function(){
@@ -124,22 +128,22 @@ prevButton.addEventListener("click", function(){
         }
         if (ratings[currentNum] !== undefined) {
             currentRating.hidden = false;
-            currentRating.innerHTML = `Selected Rating: ${ratings[currentNum]}`;
+            currentRating.innerHTML = `Previous Selection: ${ratings[currentNum]}`;
         }
     }
     updateButtons();
     updateCounter();
-    updateImage();
+    updateImages();
 });
 
 nextButton.addEventListener("click", function(){
-    if (currentNum < images.length - 1) {
+    if (currentNum < 15) { // 15 comparisons
         currentNum++;
     }
     updateButtons();
     updateCounter();
     updatePrevRating();
-    updateImage();
+    updateImages();
 });
 
 // The logic for enabling/disabling buttons based on ratings and navigation
@@ -161,8 +165,8 @@ updateButtons = () => {
 
 // Update progress bar and display progress
 updateCounter = () => {
-    progressFraction.innerHTML = `Current Rating: ${currentNum} /30`;
-    let progressPercentage = Math.round((currentNum / 30) * 100);
+    progressFraction.innerHTML = `Current Comparison: ${currentNum} /15`;
+    let progressPercentage = Math.round((currentNum / 15) * 100);
     progressBar.style = `width: ${progressPercentage}%`;
 
     // Ensure progress bar reaches 100% when all ratings are completed
@@ -175,7 +179,7 @@ updateCounter = () => {
 updatePrevRating = () => {
     if (ratings[currentNum - 1] !== undefined) {
         currentRating.hidden = false;
-        currentRating.innerHTML = `Previous Rating: ${ratings[currentNum-1]}`;
+        currentRating.innerHTML = `Previous Selection: ${ratings[currentNum-1]}`;
     }
 };
 
@@ -188,7 +192,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Fetch images and handle image navigation
 document.addEventListener("DOMContentLoaded", function () {
-    const playerImage = document.getElementById("PlayerImage");
+    const playerImage1 = document.getElementById("PlayerImage1");
+    const playerImage2 = document.getElementById("PlayerImage2");
 
     // Fetch the JSON file for images
     fetch("https://bmicardratings.netlify.app/images.json")
@@ -196,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             images = getUniqueRandomImages(data.images, 30);
             if (images.length > 0) {
-                playerImage.src = BASE_URL + "/" + images[currentNum];
+                updateImages();
             }
         })
         .catch(error => console.error("Error loading images:", error));
@@ -222,13 +227,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Function to update the image
-function updateImage() {
-    const playerImage = document.getElementById("PlayerImage");
+// Function to update both images
+function updateImages() {
+    const playerImage1 = document.getElementById("PlayerImage1");
+    const playerImage2 = document.getElementById("PlayerImage2");
+    
+    // Calculate the next pair of images to show
+    currentPair = [currentNum * 2, currentNum * 2 + 1];
     
     // Ensure there are images in the array and currentNum is within bounds
-    if (images.length > 0 && currentNum >= 0 && currentNum < images.length) {
-        playerImage.src = BASE_URL + "/" + images[currentNum];
+    if (images.length > 0 && currentPair[0] < images.length && currentPair[1] < images.length) {
+        playerImage1.src = BASE_URL + "/" + images[currentPair[0]];
+        playerImage2.src = BASE_URL + "/" + images[currentPair[1]];
     }
 }
 
@@ -248,29 +258,32 @@ closeWindowB.addEventListener("click", function () {
     const now = new Date();
     const dateG = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
     const timeG = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-    closeWindowB.disabled = true;
-    console.log(images);
-    let data = {
-        firstName: first.value.trim(),
-        lastName: second.value.trim(),
-        email: email.value.trim(),
-        ratings: ratings, // Array of ratings
-        players: images,// Array of image filenames in order
+    
+    // Prepare data for Google Sheets
+    const data = {
+        firstName: first.value,
+        lastName: second.value,
+        email: email.value,
+        date: dateG,
         time: timeG,
-        date: dateG
+        ratings: ratings.join(','),
+        imagePairs: currentPair.map(i => images[i]).join(',')
     };
 
-    console.log("Sending data to Google Sheets:", data); // Debug log
-
-    fetch("https://script.google.com/macros/s/AKfycbw6cZkCgHjvW4HBMKFe6ge3tvMh0dcbIlVCWKT_hCzySnR-Cm8YhENHN-JSUSNyIQ/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
+    // Send data to Google Sheets
+    fetch('https://script.google.com/macros/s/AKfycbwI_cAs6o8eKJ5RKJ_daUUQX0O-gnLwz2yO3pzotEM50Iq0DTPJc0oi6zisy1ceJm-sBA/exec', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
         body: JSON.stringify(data)
     })
-    .then(() => {
-        console.log("Data sent to Google Sheets");
-        window.close(); // Close the window after sending
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        window.close();
     })
-    .catch(error => console.error("Error sending data:", error));
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 });
