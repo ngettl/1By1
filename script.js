@@ -319,9 +319,15 @@ closeWindowB.addEventListener("click", function () {
     .catch((error) => {
         console.error('Error details:', error);
         console.error('Error stack:', error.stack);
-        // Even if there's an error, we'll assume the data was sent
-        // This is because with no-cors mode we can't properly detect success/failure
-        alert('Thank you! Your responses have been recorded.');
-        window.close();
+        // Only show error message if it's not a CORS-related error
+        if (error.message !== 'HTTP error! status: 0') {
+            alert('There was an error submitting your responses. Please try again or contact the administrator.');
+            closeWindowB.disabled = false;
+            closeWindowB.textContent = "Submit Results";
+        } else {
+            // For CORS errors, assume the data was sent successfully
+            alert('Thank you! Your responses have been recorded.');
+            window.close();
+        }
     });
 });
