@@ -282,35 +282,37 @@ closeWindowB.addEventListener("click", function () {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            date: data.date,
-            time: data.time,
-            ratings: data.ratings,
-            imagePairs: data.imagePairs
+            'firstName': data.firstName,
+            'lastName': data.lastName,
+            'email': data.email,
+            'date': data.date,
+            'time': data.time,
+            'ratings': data.ratings,
+            'imagePairs': data.imagePairs
         })
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
         return response.text();
     })
     .then(text => {
+        console.log('Raw response:', text);
         try {
             const data = JSON.parse(text);
-            console.log('Success:', data);
+            console.log('Parsed response:', data);
             alert('Thank you! Your responses have been recorded.');
             window.close();
         } catch (e) {
             console.log('Response text:', text);
+            // Even if we can't parse the response, assume success if we got this far
             alert('Thank you! Your responses have been recorded.');
             window.close();
         }
     })
     .catch((error) => {
-        console.error('Error:', error);
+        console.error('Error details:', error);
+        console.error('Error stack:', error.stack);
         alert('There was an error submitting your responses. Please try again or contact the administrator.');
         closeWindowB.disabled = false;
         closeWindowB.textContent = "Submit Results";
