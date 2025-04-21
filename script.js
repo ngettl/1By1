@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const playerImage2 = document.getElementById("PlayerImage2");
 
     // Fetch the JSON file for images
-    fetch("https://bmicardratings.netlify.app/images.json")
+    fetch("https://bmicardratingscomparison.netlify.app/images.json")
         .then(response => response.json())
         .then(data => {
             images = getUniqueRandomImages(data.images, 30);
