@@ -180,7 +180,15 @@ updateCounter = () => {
 updatePrevRating = () => {
     if (ratings[currentNum - 1] !== undefined) {
         currentRating.hidden = false;
-        currentRating.innerHTML = `Previous Selection: ${ratings[currentNum-1]}`;
+        // Map the rating to match button labels
+        const ratingMap = {
+            'left_much': 'Left Player Looks Much Heavier',
+            'left_little': 'Left Player Looks Slightly Heavier',
+            'equal': 'About the Same',
+            'right_little': 'Right Player Looks Slightly Heavier',
+            'right_much': 'Right Player Looks Much Heavier'
+        };
+        currentRating.innerHTML = `Previous Selection: ${ratingMap[ratings[currentNum-1]]}`;
     }
 };
 
